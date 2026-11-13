@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
@@ -33,6 +35,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun HubApp() {
+    val ctx = LocalContext.current
+    val lib = remember { Library(ctx) }
     val nav = rememberNavController()
     val current by nav.currentBackStackEntryAsState()
     Scaffold(
@@ -59,9 +63,9 @@ fun HubApp() {
         }
     ) { pad ->
         NavHost(nav, startDestination = Dest.Home.name, modifier = Modifier.padding(pad)) {
-            composable(Dest.Home.name) { HomeScreen() }
+            composable(Dest.Home.name) { HomeScreen(lib) }
             composable(Dest.Perf.name) { PerformanceScreen() }
-            composable(Dest.Games.name) { Soon("My Games", "Stage 2", "Game library, importing, covers, search, favorites.") }
+            composable(Dest.Games.name) { GamesScreen(lib) }
             composable(Dest.Consoles.name) { Soon("Console Center", "Stages 4-5", "PSP (PPSSPP) and PS2 emulator integration.") }
             composable(Dest.Pad.name) { Soon("Virtual Pad", "Stage 3", "Customizable on-screen gamepad and profiles.") }
             composable(Dest.Settings.name) { Soon("Settings", "Later stages", "Settings appear once there are features to configure.") }

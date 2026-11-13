@@ -1,6 +1,11 @@
 package com.nolan.gaminghub
 
+import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -33,9 +38,27 @@ private fun InfoCard(label: String, value: String) {
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(lib: Library) {
+    val ctx = LocalContext.current
     val d = remember { readDeviceInfo() }
+    val recent = lib.games.filter { it.lastPlayed > 0 }.sortedByDescending { it.lastPlayed }.take(8)
     Page("Universal Gaming Hub") {
+        Text("Recently played", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (recent.isEmpty()) {
+            Text("Bado hujacheza game yoyote. Ongeza games kwenye My Games.", fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        } else {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                items(recent, key = { it.id }) { g ->
+                    Column(Modifier.width(80.dp).clickable {
+                        launchGame(ctx, lib, g)?.let { Toast.makeText(ctx, it, Toast.LENGTH_LONG).show() }
+                    }) {
+                        Cover(g, Modifier.size(80.dp))
+                        Text(g.title, fontSize = 11.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
+                }
+            }
+        }
         Text("Your device", color = MaterialTheme.colorScheme.onSurfaceVariant)
         InfoCard("Model", d.model)
         InfoCard("System", d.android)
