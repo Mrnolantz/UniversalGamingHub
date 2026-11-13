@@ -37,6 +37,7 @@ class MainActivity : ComponentActivity() {
 fun HubApp() {
     val ctx = LocalContext.current
     val lib = remember { Library(ctx) }
+    val pads = remember { PadStore(ctx) }
     val nav = rememberNavController()
     val current by nav.currentBackStackEntryAsState()
     Scaffold(
@@ -67,7 +68,7 @@ fun HubApp() {
             composable(Dest.Perf.name) { PerformanceScreen() }
             composable(Dest.Games.name) { GamesScreen(lib) }
             composable(Dest.Consoles.name) { Soon("Console Center", "Stages 4-5", "PSP (PPSSPP) and PS2 emulator integration.") }
-            composable(Dest.Pad.name) { Soon("Virtual Pad", "Stage 3", "Customizable on-screen gamepad and profiles.") }
+            composable(Dest.Pad.name) { PadScreen(pads) }
             composable(Dest.Settings.name) { Soon("Settings", "Later stages", "Settings appear once there are features to configure.") }
         }
     }
